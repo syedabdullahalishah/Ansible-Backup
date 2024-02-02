@@ -1,0 +1,19 @@
+---
+- name: Install MySQL server and client
+  hosts: servers
+  become: true
+  #vars:
+    #ansible_become_pass: "lol"
+  tasks:
+    - name: Install MySQL server and client
+      apt:
+        name:
+          - mysql-server
+          - mysql-client
+          - mysql-client-8.0
+          - mysql-client-core-8.0
+          - mysql-common
+          - mysql-server-8.0
+          - mysql-server-core-8.0
+          - libmysqlclient-dev
+        state: present

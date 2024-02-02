@@ -1,0 +1,58 @@
+- name: Install PHP and its extensions
+  hosts: servers
+  become: true
+  tasks:
+    - name: Install required packages for adding repositories
+      apt:
+        name:
+          - software-properties-common
+          - gnupg2
+        state: present
+
+    - name: Add Ondrej PHP repository
+      apt_repository:
+        repo: ppa:ondrej/php
+        state: present
+
+    - name: Update package lists
+      apt:
+        update_cache: yes
+
+    - name: Install PHP 7.4 and its extensions
+      apt:
+        name:
+          - php7.4
+          - php7.4-fpm
+          - php7.4-cli
+          # Add other PHP 7.4 extensions here
+        state: present
+
+    # Add tasks to install PHP 8.0, 8.1, 8.2 and their extensions here
+
+    - name: Ensure PHP configuration directory exists
+      file:
+        path: /etc/php/7.4/cli/
+        state: directory
+
+    - name: Create PHP configuration file if it doesn't exist
+      file:
+        path: /etc/php/7.4/cli/php.ini
+        state: touch
+
+    - name: Configure PHP 7.4
+      lineinfile:
+        path: /etc/php/7.4/cli/php.ini
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: '^;?\\s*opcache.enable\\s*=', line: 'opcache.enable=1' }
+        - { regexp: '^;?\\s*opcache.memory_consumption\\s*=', line: 'opcache.memory_consumption=128' }
+        - { regexp: '^;?\\s*opcache.max_accelerated_files\\s*=', line: 'opcache.max_accelerated_files=10000' }
+        - { regexp: '^;?\\s*opcache.revalidate_freq\\s*=', line: 'opcache.revalidate_freq=200' }
+      notify: Restart Apache2
+
+  handlers:
+    - name: Restart Apache2
+      service:
+        name: apache2
+        state: restarted

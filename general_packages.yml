@@ -1,0 +1,44 @@
+---
+- name: Install packages on servers
+  hosts: servers
+  become: true
+  #vars:
+    #ansible_become_pass: "lol"
+  tasks:
+    - name: Update package lists and upgrade installed packages
+      apt:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - zip
+          - iftop
+          - tar
+          - software-properties-common
+          - htop
+          - lolcat
+          - bzip2
+          - vnstat
+          - rsnapshot
+          - git
+          - whois
+          - mysecureshell
+          - mailutils
+          - snapd
+          - lynx
+          - lz4
+          - mawk
+          - figlet
+          - memcached
+          - mime-support
+          - mount
+          - multipath-tools
+          - mytop
+          - net-tools
+          - nmap
+          - nodejs
+          - npm
+          - curl
+        state: present

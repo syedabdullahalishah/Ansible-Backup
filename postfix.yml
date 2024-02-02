@@ -1,0 +1,62 @@
+---
+- name: Install and configure Postfix
+  hosts: servers
+  become: true
+  #vars:
+    #ansible_become_pass: "lol"
+  tasks:
+    - name: Update package lists
+      apt:
+        update_cache: yes
+
+    - name: Install Postfix
+      apt:
+        name: postfix
+        state: present
+      environment:
+        DEBIAN_PRIORITY: low
+
+    - name: Set home_mailbox in Postfix configuration
+      command: "postconf -e 'home_mailbox= Maildir/'"
+
+    - name: Set virtual_alias_maps in Postfix configuration
+      command: "postconf -e 'virtual_alias_maps= hash:/etc/postfix/virtual'"
+
+    - name: Update virtual alias map
+      command: "postmap /etc/postfix/virtual"
+
+    - name: Restart Postfix service
+      service:
+        name: postfix
+        state: restarted
+
+    - name: Allow Postfix in UFW
+      ufw:
+        rule: allow
+        port: Postfix
+
+    - name: Set MAIL environment variable in bash configuration
+      lineinfile:
+        path: /etc/bash.bashrc
+        line: "export MAIL=~/Maildir"
+
+    - name: Set MAIL environment variable in profile.d script
+      lineinfile:
+        path: /etc/profile.d/mail.sh
+        line: "export MAIL=~/Maildir"
+
+    - name: Source profile.d script
+      shell: "source /etc/profile.d/mail.sh"
+
+    - name: Install s-nail
+      apt:
+        name: s-nail
+        state: present
+
+    - name: Configure s-nail
+      copy:
+        content: |
+          set emptystart
+          set folder=Maildir
+          set record=+sent
+        dest: /etc/s-nail.rc

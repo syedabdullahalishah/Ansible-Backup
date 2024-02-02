@@ -1,0 +1,32 @@
+---
+- name: Install Ansible and configure inventory
+  hosts: localhost
+  become: true
+  #vars:
+    #ansible_become_pass: "lol" 
+ tasks:
+    - name: Add Ansible repository
+      apt_repository:
+        repo: ppa:ansible/ansible
+        state: present
+
+    - name: Update package lists
+      apt:
+        update_cache: yes
+
+    - name: Install Ansible
+      apt:
+        name: ansible
+        state: present
+
+    - name: Create Ansible inventory file
+      copy:
+        content: |
+          [servers]
+          #server1 ansible_host=000.000.000.000 ansible_user=admin_user
+          #server2 ansible_host=000.000.000.000
+          #server3 ansible_host=000.000.000.000
+
+          [all:vars]
+          ansible_python_interpreter=/usr/bin/python3
+        dest: /etc/ansible/hosts

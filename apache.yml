@@ -1,0 +1,95 @@
+---
+- name: Install Apache2 and PHP
+  hosts: servers
+  become: true
+  become_user: admin_user  # Specify the user with sudo privileges
+
+  #vars:
+    #ansible_become_pass: "lol"
+  tasks:
+    - name: Add PHP PPA repository
+      apt_repository:
+        repo: ppa:ondrej/php
+        state: present
+
+    - name: Update package lists
+      apt:
+        update_cache: yes
+
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: present
+
+    - name: Install Apache2 modules and PHP
+      apt:
+        name:
+          - apache2-bin
+          - apache2-data
+          - apache2-utils
+          - libapache2-mod-php7.4
+          - libapache2-mod-php8.0
+          - libapache2-mod-php8.1
+          - libapache2-mod-php8.2
+        state: present
+
+    - name: Configure PHP 7.4 if php.ini exists
+      block:
+        - name: Configure opcache.enable
+          lineinfile:
+            path: /etc/php/7.4/cli/php.ini
+            regexp: '^;?\s*opcache.enable\s*='
+            line: 'opcache.enable=1'
+
+        - name: Configure opcache.memory_consumption
+          lineinfile:
+            path: /etc/php/7.4/cli/php.ini
+            regexp: '^;?\s*opcache.memory_consumption\s*='
+            line: 'opcache.memory_consumption=128'
+
+        - name: Configure opcache.max_accelerated_files
+          lineinfile:
+            path: /etc/php/7.4/cli/php.ini
+            regexp: '^;?\s*opcache.max_accelerated_files\s*='
+            line: 'opcache.max_accelerated_files=10000'
+
+        - name: Configure opcache.revalidate_freq
+          lineinfile:
+            path: /etc/php/7.4/cli/php.ini
+            regexp: '^;?\s*opcache.revalidate_freq\s*='
+            line: 'opcache.revalidate_freq=200'
+
+    - name: Enable required Apache modules
+      command: "a2enmod {{ item }}"
+      loop:
+        - access_compat
+        - alias
+        - auth_basic
+        - authn_core
+        - authn_file
+        - authz_core
+        - authz_host
+        - authz_user
+        - autoindex
+        - deflate
+        - dir
+        - env
+        - expires
+        - filter
+        - headers
+        - mime
+        - mpm_prefork
+        - negotiation
+        - php7.4
+        - php8.0
+        - php8.1
+        - php8.2
+        - reqtimeout
+        - rewrite
+        - setenvif
+        - status
+
+    - name: Restart Apache2 service
+      service:
+        name: apache2
+        state: restarted
