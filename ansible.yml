@@ -1,10 +1,10 @@
 ---
 - name: Install Ansible and configure inventory
-  hosts: localhost
+  hosts: servers
   become: true
   #vars:
     #ansible_become_pass: "lol" 
- tasks:
+  tasks:
     - name: Add Ansible repository
       apt_repository:
         repo: ppa:ansible/ansible

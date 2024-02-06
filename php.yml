@@ -1,58 +1,259 @@
-- name: Install PHP and its extensions
-  hosts: servers
-  become: true
+---
+- name: Install and configure PHP
+  hosts: all
+  become: yes
   tasks:
-    - name: Install required packages for adding repositories
+    - name: Install required packages
       apt:
-        name:
-          - software-properties-common
-          - gnupg2
+        name: "{{ item }}"
         state: present
+      loop:
+        - software-properties-common
+        - gnupg2
 
-    - name: Add Ondrej PHP repository
+    - name: Add PHP repository
       apt_repository:
         repo: ppa:ondrej/php
-        state: present
 
-    - name: Update package lists
+    - name: Update package cache
       apt:
         update_cache: yes
 
-    - name: Install PHP 7.4 and its extensions
+    - name: Install PHP and required extensions
       apt:
-        name:
-          - php7.4
-          - php7.4-fpm
-          - php7.4-cli
-          # Add other PHP 7.4 extensions here
+        name: "{{ item }}"
         state: present
+      loop:
+        - php8.0
+        - php8.0-fpm
+        - php8.0-cli
+        - php8.0-bcmath
+        - php8.0-bz2
+        - php8.0-calendar
+        - php8.0-ctype
+        - php8.0-curl
+        - php8.0-dom
+        - php8.0-exif
+        - php8.0-ffi
+        - php8.0-fileinfo
+        - php8.0-ftp
+        - php8.0-gd
+        - php8.0-gettext
+        - php8.0-gmp
+        - php8.0-iconv
+        - php8.0-imagick
+        - php8.0-imap
+        - php8.0-intl
+        - php8.0-ldap
+        - php8.0-mbstring
+        - php8.0-memcache
+        - php8.0-mysqli
+        - php8.0-mysqlnd
+        - php8.0-pdo
+        - php8.0-phar
+        - php8.0-posix
+        - php8.0-readline
+        - php8.0-mcrypt
+        - php8.0-soap
+        - php8.0-shmop
+        - php8.0-simplexml
+        - php8.0-sockets
+        - php8.0-sqlite3
+        - php8.0-sysvmsg
+        - php8.0-sysvsem
+        - php8.0-sysvshm
+        - php8.0-tokenizer
+        - php8.0-xml
+        - php8.0-xmlreader
+        - php8.0-xmlrpc
+        - php8.0-xmlwriter
+        - php8.0-xsl
+        - php8.0-zip
+        - php8.1
+        - php8.1-fpm
+        - php8.1-cli
+        - php8.1-bcmath
+        - php8.1-bz2
+        - php8.1-calendar
+        - php8.1-ctype
+        - php8.1-curl
+        - php8.1-dom
+        - php8.1-exif
+        - php8.1-ffi
+        - php8.1-fileinfo
+        - php8.1-ftp
+        - php8.1-gd
+        - php8.1-gettext
+        - php8.1-gmp
+        - php8.1-iconv
+        - php8.1-imagick
+        - php8.1-imap
+        - php8.1-intl
+        - php8.1-ldap
+        - php8.1-mbstring
+        - php8.1-memcache
+        - php8.1-mysqli
+        - php8.1-mysqlnd
+        - php8.1-pdo
+        - php8.1-phar
+        - php8.1-posix
+        - php8.1-readline
+        - php8.1-mcrypt
+        - php8.1-soap
+        - php8.1-shmop
+        - php8.1-simplexml
+        - php8.1-sockets
+        - php8.1-sqlite3
+        - php8.1-sysvmsg
+        - php8.1-sysvsem
+        - php8.1-sysvshm
+        - php8.1-tokenizer
+        - php8.1-xml
+        - php8.1-xmlreader
+        - php8.1-xmlrpc
+        - php8.1-xmlwriter
+        - php8.1-xsl
+        - php8.1-zip
+        - php8.2
+        - php8.2-fpm
+        - php8.2-cli
+        - php8.2-bcmath
+        - php8.2-bz2
+        - php8.2-calendar
+        - php8.2-ctype
+        - php8.2-curl
+        - php8.2-dom
+        - php8.2-exif
+        - php8.2-ffi
+        - php8.2-fileinfo
+        - php8.2-ftp
+        - php8.2-gd
+        - php8.2-gettext
+        - php8.2-gmp
+        - php8.2-iconv
+        - php8.2-imagick
+        - php8.2-imap
+        - php8.2-intl
+        - php8.2-ldap
+        - php8.2-mbstring
+        - php8.2-memcache
+        - php8.2-mysqli
+        - php8.2-mysqlnd
+        - php8.2-pdo
+        - php8.2-phar
+        - php8.2-posix
+        - php8.2-readline
+        - php8.2-mcrypt
+        - php8.2-soap
+        - php8.2-shmop
+        - php8.2-simplexml
+        - php8.2-sockets
+        - php8.2-sqlite3
+        - php8.2-sysvmsg
+        - php8.2-sysvsem
+        - php8.2-sysvshm
+        - php8.2-tokenizer
+        - php8.2-xml
+        - php8.2-xmlreader
+        - php8.2-xmlrpc
+        - php8.2-xmlwriter
+        - php8.2-xsl
+        - php8.2-zip
+        - php8.3
+        - php8.3-fpm
+        - php8.3-cli
+        - php8.3-bcmath
+        - php8.3-bz2
+        - php8.3-calendar
+        - php8.3-ctype
+        - php8.3-curl
+        - php8.3-dom
+        - php8.3-exif
+        - php8.3-ffi
+        - php8.3-fileinfo
+        - php8.3-ftp
+        - php8.3-gd
+        - php8.3-gettext
+        - php8.3-gmp
+        - php8.3-iconv
+        - php8.3-imagick
+        - php8.3-imap
+        - php8.3-intl
+        - php8.3-ldap
+        - php8.3-mbstring
+        - php8.3-memcache
+        - php8.3-mysqli
+        - php8.3-mysqlnd
+        - php8.3-pdo
+        - php8.3-phar
+        - php8.3-posix
+        - php8.3-readline
+        - php8.3-soap
+        - php8.3-shmop
+        - php8.3-simplexml
+        - php8.3-sockets
+        - php8.3-sqlite3
+        - php8.3-sysvmsg
+        - php8.3-sysvsem
+        - php8.3-sysvshm
+        - php8.3-tokenizer
+        - php8.3-xml
+        - php8.3-xmlreader
+        - php8.3-xmlrpc
+        - php8.3-xmlwriter
+        - php8.3-xsl
+        - php8.3-zip
 
-    # Add tasks to install PHP 8.0, 8.1, 8.2 and their extensions here
-
-    - name: Ensure PHP configuration directory exists
-      file:
-        path: /etc/php/7.4/cli/
-        state: directory
-
-    - name: Create PHP configuration file if it doesn't exist
-      file:
-        path: /etc/php/7.4/cli/php.ini
-        state: touch
-
-    - name: Configure PHP 7.4
+    - name: Configure opcache in 8.0 php.ini
       lineinfile:
-        path: /etc/php/7.4/cli/php.ini
+        path: /etc/php/8.0/apache2/php.ini
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
-      loop:
-        - { regexp: '^;?\\s*opcache.enable\\s*=', line: 'opcache.enable=1' }
-        - { regexp: '^;?\\s*opcache.memory_consumption\\s*=', line: 'opcache.memory_consumption=128' }
-        - { regexp: '^;?\\s*opcache.max_accelerated_files\\s*=', line: 'opcache.max_accelerated_files=10000' }
-        - { regexp: '^;?\\s*opcache.revalidate_freq\\s*=', line: 'opcache.revalidate_freq=200' }
-      notify: Restart Apache2
+        state: present
+      with_items:
+        - { regexp: '^;?opcache.enable=', line: 'opcache.enable=1' }
+        - { regexp: '^;?opcache.memory_consumption=', line: 'opcache.memory_consumption=128' }
+        - { regexp: '^;?opcache.max_accelerated_files=', line: 'opcache.max_accelerated_files=10000' }
+        - { regexp: '^;?opcache.revalidate_freq=', line: 'opcache.revalidate_freq=200' }
 
-  handlers:
-    - name: Restart Apache2
-      service:
+
+    - name: Configure opcache in 8.1 php.ini
+      lineinfile:
+        path: /etc/php/8.1/apache2/php.ini
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      with_items:
+        - { regexp: '^;?opcache.enable=', line: 'opcache.enable=1' }
+        - { regexp: '^;?opcache.memory_consumption=', line: 'opcache.memory_consumption=128' }
+        - { regexp: '^;?opcache.max_accelerated_files=', line: 'opcache.max_accelerated_files=10000' }
+        - { regexp: '^;?opcache.revalidate_freq=', line: 'opcache.revalidate_freq=200' }
+
+    - name: Configure opcache in 8.2 php.ini
+      lineinfile:
+        path: /etc/php/8.2/apache2/php.ini
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      with_items:
+        - { regexp: '^;?opcache.enable=', line: 'opcache.enable=1' }
+        - { regexp: '^;?opcache.memory_consumption=', line: 'opcache.memory_consumption=128' }
+        - { regexp: '^;?opcache.max_accelerated_files=', line: 'opcache.max_accelerated_files=10000' }
+        - { regexp: '^;?opcache.revalidate_freq=', line: 'opcache.revalidate_freq=200' }
+
+    - name: Configure opcache in 8.3 php.ini
+      lineinfile:
+        path: /etc/php/8.3/apache2/php.ini
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      with_items:
+        - { regexp: '^;?opcache.enable=', line: 'opcache.enable=1' }
+        - { regexp: '^;?opcache.memory_consumption=', line: 'opcache.memory_consumption=128' }
+        - { regexp: '^;?opcache.max_accelerated_files=', line: 'opcache.max_accelerated_files=10000' }
+        - { regexp: '^;?opcache.revalidate_freq=', line: 'opcache.revalidate_freq=200' }
+
+    - name: Restart Apache
+      systemd:
         name: apache2
         state: restarted
