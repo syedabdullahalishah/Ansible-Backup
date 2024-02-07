@@ -52,8 +52,6 @@
         - php8.0-pdo
         - php8.0-phar
         - php8.0-posix
-        - php8.0-readline
-        - php8.0-mcrypt
         - php8.0-soap
         - php8.0-shmop
         - php8.0-simplexml
@@ -97,7 +95,6 @@
         - php8.1-pdo
         - php8.1-phar
         - php8.1-posix
-        - php8.1-readline
         - php8.1-mcrypt
         - php8.1-soap
         - php8.1-shmop
@@ -142,7 +139,6 @@
         - php8.2-pdo
         - php8.2-phar
         - php8.2-posix
-        - php8.2-readline
         - php8.2-mcrypt
         - php8.2-soap
         - php8.2-shmop
@@ -186,8 +182,7 @@
         - php8.3-mysqlnd
         - php8.3-pdo
         - php8.3-phar
-        - php8.3-posix
-        - php8.3-readline
+        - php8.3-posix 
         - php8.3-soap
         - php8.3-shmop
         - php8.3-simplexml
@@ -215,7 +210,6 @@
         - { regexp: '^;?opcache.memory_consumption=', line: 'opcache.memory_consumption=128' }
         - { regexp: '^;?opcache.max_accelerated_files=', line: 'opcache.max_accelerated_files=10000' }
         - { regexp: '^;?opcache.revalidate_freq=', line: 'opcache.revalidate_freq=200' }
-
 
     - name: Configure opcache in 8.1 php.ini
       lineinfile:

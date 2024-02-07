@@ -23,8 +23,8 @@
       copy:
         content: |
           [servers]
-          #server1 ansible_host=000.000.000.000 ansible_user=admin_user
-          #server2 ansible_host=000.000.000.000
+          #server1 ansible_host=000.000.000.000
+          #server2 ansible_host=000.000.000.000 ansible_user=admin_user
           #server3 ansible_host=000.000.000.000
 
           [all:vars]
