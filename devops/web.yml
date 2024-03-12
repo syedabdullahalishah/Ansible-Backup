@@ -1,189 +1,191 @@
 ---
- - name: Installing Web Services on Servers
-   action: apt pkg={{item}} state=installed
-   with_items:
-    - nginx
-    - varnish
-    - memcached
-    - redis-server
-    - apache2
-    - apache2-bin
-    - apache2-data
-    - apache2-utils
-    - libapache2-mod-php8.0
-    - libapache2-mod-php8.1
-    - libapache2-mod-php8.2
-    - libapache2-mod-php8.3
-    - php8.0-fpm
-    - php8.1-fpm
-    - php8.2-fpm
-    - php8.3-fpm    
-    - php8.0
-    - php8.0-fpm
-    - php8.0-cli
-    - php8.0-bcmath
-    - php8.0-bz2
-    - php8.0-curl
-    - php8.0-dom
-    - php8.0-gd
-    - php8.0-gmp
-    - php8.0-imagick
-    - php8.0-imap
-    - php8.0-intl
-    - php8.0-ldap
-    - php8.0-mbstring
-    - php8.0-memcache
-    - php8.0-mysqli
-    - php8.0-mysql
-    - php8.0-soap
-    - php8.0-simplexml
-    - php8.0-sqlite3
-    - php8.0-xml
-    - php8.0-xmlreader
-    - php8.0-xmlrpc
-    - php8.0-xmlwriter
-    - php8.0-xsl
-    - php8.0-zip
-    - php8.1
-    - php8.1-fpm
-    - php8.1-cli
-    - php8.1-bcmath
-    - php8.1-bz2
-    - php8.1-curl
-    - php8.1-dom
-    - php8.1-gd
-    - php8.1-gmp
-    - php8.1-imagick
-    - php8.1-imap
-    - php8.1-intl
-    - php8.1-ldap
-    - php8.1-mbstring
-    - php8.1-memcache
-    - php8.1-mysqli
-    - php8.1-mysqlnd
-    - php8.1-mcrypt
-    - php8.1-soap
-    - php8.1-simplexml
-    - php8.1-sqlite3
-    - php8.1-xml
-    - php8.1-xmlreader
-    - php8.1-xmlrpc
-    - php8.1-xmlwriter
-    - php8.1-xsl
-    - php8.1-zip
-    - php8.2
-    - php8.2-fpm
-    - php8.2-cli
-    - php8.2-bcmath
-    - php8.2-bz2
-    - php8.2-curl
-    - php8.2-dom
-    - php8.2-gd
-    - php8.2-gmp
-    - php8.2-imagick
-    - php8.2-imap
-    - php8.2-intl
-    - php8.2-ldap
-    - php8.2-mbstring
-    - php8.2-memcache
-    - php8.2-mysqli
-    - php8.2-mysqlnd
-    - php8.2-mcrypt
-    - php8.2-soap
-    - php8.2-simplexml
-    - php8.2-sqlite3
-    - php8.2-xml
-    - php8.2-xmlreader
-    - php8.2-xmlrpc
-    - php8.2-xmlwriter
-    - php8.2-xsl
-    - php8.2-zip
-    - php8.3
-    - php8.3-fpm
-    - php8.3-cli
-    - php8.3-bcmath
-    - php8.3-bz2
-    - php8.3-curl
-    - php8.3-dom
-    - php8.3-gd
-    - php8.3-gmp
-    - php8.3-imagick
-    - php8.3-imap
-    - php8.3-intl
-    - php8.3-ldap
-    - php8.3-mbstring
-    - php8.3-memcache
-    - php8.3-mysqli
-    - php8.3-mysqlnd
-    - php8.3-soap
-    - php8.3-simplexml
-    - php8.3-sqlite3
-    - php8.3-xml
-    - php8.3-xmlreader
-    - php8.3-xmlrpc
-    - php8.3-xmlwriter
-    - php8.3-xsl
-    - php8.3-zip
+- name: Installing Web Services on Servers
+  hosts: all
+  become: true  # This will ensure tasks run with sudo
+  
+  tasks:
+    - name: Install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - nginx
+        - varnish
+        - memcached
+        - redis-server
+        - apache2
+        - apache2-bin
+        - apache2-data
+        - apache2-utils
+        - libapache2-mod-php8.0
+        - libapache2-mod-php8.1
+        - libapache2-mod-php8.2
+        - libapache2-mod-php8.3
+        - php8.0-fpm
+        - php8.1-fpm
+        - php8.2-fpm
+        - php8.3-fpm
+        - php8.0
+        - php8.0-fpm
+        - php8.0-cli
+        - php8.0-bcmath
+        - php8.0-bz2
+        - php8.0-curl
+        - php8.0-dom
+        - php8.0-gd
+        - php8.0-gmp
+        - php8.0-imagick
+        - php8.0-imap
+        - php8.0-intl
+        - php8.0-ldap
+        - php8.0-mbstring
+        - php8.0-memcache
+        - php8.0-mysqli
+        - php8.0-mysql
+        - php8.0-soap
+        - php8.0-simplexml
+        - php8.0-sqlite3
+        - php8.0-xml
+        - php8.0-xmlreader
+        - php8.0-xmlrpc
+        - php8.0-xmlwriter
+        - php8.0-xsl
+        - php8.0-zip
+        - php8.1
+        - php8.1-fpm
+        - php8.1-cli
+        - php8.1-bcmath
+        - php8.1-bz2
+        - php8.1-curl
+        - php8.1-dom
+        - php8.1-gd
+        - php8.1-gmp
+        - php8.1-imagick
+        - php8.1-imap
+        - php8.1-intl
+        - php8.1-ldap
+        - php8.1-mbstring
+        - php8.1-memcache
+        - php8.1-mysqli
+        - php8.1-mysqlnd
+        - php8.1-mcrypt
+        - php8.1-soap
+        - php8.1-simplexml
+        - php8.1-sqlite3
+        - php8.1-xml
+        - php8.1-xmlreader
+        - php8.1-xmlrpc
+        - php8.1-xmlwriter
+        - php8.1-xsl
+        - php8.1-zip
+        - php8.2
+        - php8.2-fpm
+        - php8.2-cli
+        - php8.2-bcmath
+        - php8.2-bz2
+        - php8.2-curl
+        - php8.2-dom
+        - php8.2-gd
+        - php8.2-gmp
+        - php8.2-imagick
+        - php8.2-imap
+        - php8.2-intl
+        - php8.2-ldap
+        - php8.2-mbstring
+        - php8.2-memcache
+        - php8.2-mysqli
+        - php8.2-mysqlnd
+        - php8.2-mcrypt
+        - php8.2-soap
+        - php8.2-simplexml
+        - php8.2-sqlite3
+        - php8.2-xml
+        - php8.2-xmlreader
+        - php8.2-xmlrpc
+        - php8.2-xmlwriter
+        - php8.2-xsl
+        - php8.2-zip
+        - php8.3
+        - php8.3-fpm
+        - php8.3-cli
+        - php8.3-bcmath
+        - php8.3-bz2
+        - php8.3-curl
+        - php8.3-dom
+        - php8.3-gd
+        - php8.3-gmp
+        - php8.3-imagick
+        - php8.3-imap
+        - php8.3-intl
+        - php8.3-ldap
+        - php8.3-mbstring
+        - php8.3-memcache
+        - php8.3-mysqli
+        - php8.3-mysqlnd
+        - php8.3-soap
+        - php8.3-simplexml
+        - php8.3-sqlite3
+        - php8.3-xml
+        - php8.3-xmlreader
+        - php8.3-xmlrpc
+        - php8.3-xmlwriter
+        - php8.3-xsl
+        - php8.3-zip
 
- - name: Enable required Apache & PHP modules
-   command: "a2enmod {{ item }}"
-   loop:
-    - rpaf
-    - access_compat
-    - ssl
-    - alias
-    - auth_basic
-    - authn_core
-    - authn_file
-    - authz_core
-    - authz_host
-    - authz_user
-    - autoindex
-    - deflate
-    - dir
-    - env
-    - expires
-    - filter
-    - headers
-    - mime
-    - mpm_prefork
-    - negotiation
-    - reqtimeout
-    - rewrite
-    - setenvif
-    - status
-    - php8.0
-    - php8.1
-    - php8.2
-    - php8.3
+    - name: Enable required Apache & PHP modules
+      command: "a2enmod {{ item }}"
+      loop:
+        - access_compat
+        - ssl
+        - alias
+        - auth_basic
+        - authn_core
+        - authn_file
+        - authz_core
+        - authz_host
+        - authz_user
+        - autoindex
+        - deflate
+        - dir
+        - env
+        - expires
+        - filter
+        - headers
+        - mime
+        - mpm_prefork
+        - negotiation
+        - reqtimeout
+        - rewrite
+        - setenvif
+        - status
+        - php8.0
+        - php8.1
+        - php8.2
+        - php8.3
 
+    - name: Copying Web Engines Settings and Configurations
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: '0644'
+      with_items:
+        - { src: '/ddevops/ansible-playbooks/templates/nginx.conf.j2', dest: '/etc/nginx/nginx.conf' }
+        - { src: '/ddevops/ansible-playbooks/templates/ngx_backends.conf.j2', dest: '/etc/nginx/conf.d/ngx_backends.conf' }
+        - { src: '/ddevops/ansible-playbooks/templates/apache2.conf.j2', dest: '/etc/apache2/apache2.conf' }
+        - { src: '/ddevops/ansible-playbooks/templates/apache.ports.conf.j2', dest: '/etc/apache2/ports.conf' }
+        #- { src: '/ddevops/ansible-playbooks/templates/jazi.vcl.j2', dest: '/etc/varnish/default.vcl' }
+        - { src: '/ddevops/ansible-playbooks/templates/varnish.j2', dest: '/etc/default/varnish' }
+        - { src: '/ddevops/ansible-playbooks/templates/rpaf.conf.j2', dest: '/etc/apache2/mods-enabled/rpaf.conf' }
+        - { src: '/ddevops/ansible-playbooks/templates/redis.conf.j2', dest: '/etc/redis/redis.conf' }
 
- - name:  Copying Web Enginens Settings and Configurations
-   copy: src={{item.src}} dest={{item.dest}} owner=root group=root mode=0644
-   with_items:
-     - { src: 'templates/nginx.conf.j2', dest: '/etc/nginx/nginx.conf' }
-     - { src: 'templates/ngx_backends.conf.j2', dest: '/etc/nginx/conf.d/ngx_backends.conf' }
-     - { src: 'templates/apache2.conf.j2', dest: '/etc/apache2/apache2.conf' }
-     - { src: 'templates/apache.ports.conf.j2', dest: '/etc/apache2/ports.conf' }
-     - { src: 'templates/jazi.vcl.j2', dest: '/etc/varnish/default.vcl' }
-     - { src: 'templates/varnish.j2', dest: '/etc/default/varnish' }
-     - { src: 'templates/rpaf.conf.j2', dest: '/etc/apache2/mods-enabled/rpaf.conf' }
-     - { src: 'templates/redis.conf.j2', dest: '/etc/redis/redis.conf' }
-
-
-# - name: Activating Web Services
-#   action: service name={{item}} state=restarted
-#   with_items:
-#    - apache2
-#    - nginx
-#    - varnish
-#    - redis
-- name: Activating Web Services
-  service:
-    name: "{{ item }}"
-    state: restarted
-  with_items:
-    - apache2
-    - nginx
-    - varnish
-    - redis
+    - name: Activating Web Services
+      service:
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - apache2
+        - nginx
+        - varnish
+        - redis

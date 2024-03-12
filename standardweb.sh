@@ -19,8 +19,8 @@ echo ""
 #echo "\\\CONFIGURING MAIL SERVER//"
 #ansible-playbook -i /ddevops/ansible-playbooks/hosts  /ddevops/ansible-playbooks/devops/smtp_rely.yml
 
-echo "\\\CONFIGURING MYSQL//"
-ansible-playbook -i /ddevops/ansible-playbooks/hosts  /ddevops/ansible-playbooks/devops/mysql.yml
+#echo "\\\CONFIGURING MYSQL//"
+#ansible-playbook -i /ddevops/ansible-playbooks/hosts  /ddevops/ansible-playbooks/devops/mysql.yml
 
-#echo "\\\6//"
-#ansible-playbook -i /ddevops/ansible-playbooks/hosts  /ddevops/ansible-playbooks/devops/backups.yml
+echo "\\\INSTALLING WEB SERVICES//"
+ansible-playbook -i /ddevops/ansible-playbooks/hosts  /ddevops/ansible-playbooks/devops/web.yml
