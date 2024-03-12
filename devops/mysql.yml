@@ -1,8 +1,8 @@
 ---
 - name: MySQL Installation and Configuration
   hosts: all
-  vars:
-    mysql_root_password: "your_password_here"
+  #vars:
+    #mysql_root_password: "your_password_here"
 
   tasks:
     - name: Install MySQL packages and required Python packages
@@ -38,24 +38,24 @@
             executable: pip3
             state: present
 
-    - name: MySQL | Configuration file, my.cnf
-      template:
-        src: /ddevops/ansible-playbooks/templates/etc-mysql-my-cnf.j2
-        dest: /etc/mysql/my.cnf
-      notify: Restart MySQL
+    #- name: MySQL | Configuration file, my.cnf
+      #template:
+        #src: /ddevops/ansible-playbooks/templates/etc-mysql-my-cnf.j2
+        #dest: /etc/mysql/my.cnf
+      #notify: Restart MySQL
 
-    - name: MySQL | Set the root password
-      mysql_user:
-        name: root
-        password: "{{ mysql_root_password }}"
-        login_unix_socket: /var/run/mysqld/mysqld.sock
-        host: localhost
+    #- name: MySQL | Set the root password
+      #mysql_user:
+        #name: root
+        #password: "{{ mysql_root_password }}"
+        #login_unix_socket: /var/run/mysqld/mysqld.sock
+        #host: localhost
 
-    - name: MySQL | Config for easy access as root user
-      template:
-        src: /ddevops/ansible-playbooks/templates/root-my-cnf.j2
-        dest: /root/.my.cnf
-      notify: Restart MySQL
+    #- name: MySQL | Config for easy access as root user
+      #template:
+        #src: /ddevops/ansible-playbooks/templates/root-my-cnf.j2
+        #dest: /root/.my.cnf
+      #notify: Restart MySQL
 
   handlers:
     - name: Restart MySQL
