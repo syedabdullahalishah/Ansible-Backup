@@ -1,0 +1,18 @@
+#!/bin/bash
+now=$(date +"%b-%d-%y")
+admin='junaid@ddevops.com'
+export DEBIAN_FRONTEND=noninteractive
+
+apt-get update >/dev/null 2>&1
+apt-get upgrade -y >/dev/null 2>&1
+
+echo "Server Patched:$now" >> /root/j.facts
+
+echo "Greetings,
+
+This is to confirm that your server patches has been installed 
+
+
+Regards
+Server Admin" | mail -s "Server Patches Has Been Install" $admin
+

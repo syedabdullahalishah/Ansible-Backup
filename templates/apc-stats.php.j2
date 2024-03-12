@@ -1,0 +1,42 @@
+<?php
+function curl_load($url){
+    curl_setopt($ch=curl_init(), CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_USERAGENT, "CloudwaysKnock/2.0");
+    $response = curl_exec($ch);
+    $intReturnCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if ($intReturnCode != 200 ) { return '0'; } else return  $response;
+
+}
+
+$port = $argv[1];
+$url = "http://localhost:$port/cw-apcstats/apc_stats.php";
+$results = curl_load($url);
+if ($results == '0')
+   exit(1);
+$results = unserialize($results);
+$num_hits = $results["num_hits"];
+$num_misses = $results["num_misses"];
+$hits_rate = $num_hits / ($num_hits + $num_misses) * 100;
+$entries = $results["num_entries"];
+
+$url = "http://localhost:$port/cw-apcstats/apc_stats_mem.php";
+$results = curl_load($url);
+if ($results == "")
+   exit(1);
+
+$results = unserialize($results);
+$mem_used = $results["seg_size"] * $results["num_seg"] - $results["avail_mem"];
+$mem_available = $results["avail_mem"];
+$fill_ratio = $mem_used / ($mem_available + $mem_used) * 100;
+
+echo("num_hits=$num_hits\n");
+echo("num_misses=$num_misses\n");
+echo("hits_rate=$hits_rate\n");
+echo("entries=$entries\n");
+echo("mem_used=$mem_used\n");
+echo("mem_available=$mem_available\n");
+echo("fill_ratio=$fill_ratio\n");
+?>
+

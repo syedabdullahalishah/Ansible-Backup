@@ -1,0 +1,20 @@
+---
+- hosts: testing 
+  user: root
+  tasks:
+  - name: Deleting DevOps users
+    user: name={{ item }} state=absent remove=yes
+    with_items:
+  #   - shahzaib
+  #   - rahim
+  #   - ejaz
+  #   - rehnad
+  #   - ashar
+
+# - lineinfile: "dest=/etc/sudoers state=absent line='ejaz ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'"
+#  - lineinfile: "dest=/etc/sudoers state=absent line='rahim ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'"
+# - lineinfile: "dest=/etc/sudoers state=absent line='ejaz ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'"
+#  - lineinfile: "dest=/etc/sudoers state=absent line='rehan ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'"
+#  - lineinfile: "dest=/etc/sudoers state=absent line='shahazaib ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'"
+# - lineinfile: "dest=/etc/sudoers state=absent line='ashar ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'"
+# - lineinfile: "dest=/etc/hosts state=absent line='188.166.212.142      zabbix-do-web1.arpatech.com     zabbix-do-web1'"

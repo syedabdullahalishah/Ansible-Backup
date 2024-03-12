@@ -1,0 +1,20 @@
+date=`date +"%b %Y"`
+sites=`find /etc/nginx/sites-enabled -type l -printf "%f\n"`
+statusfile="/home/arpatech/status/analog"
+declare -a logs
+
+for j in $sites; do
+  logfile=$(awk '$1~/^access_log/{print $2}' /etc/nginx/sites-enabled/$j | sed 's/;//g');
+  log=$logfile;
+  logs+=( $log )
+done
+
+pageviews=`analog ${logs[@]} | grep ^"$date" | awk -F':' '{ print $3 }' | tr -d ' '`
+
+if [ -z $pageviews ]; then
+  pageviews='0'
+fi
+
+echo $pageviews > $statusfile
+
+

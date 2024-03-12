@@ -1,0 +1,12 @@
+---
+ - name: Deleting DevOps users
+   user: name={{ item }} state=absent remove=yes
+   with_items:
+     - user1
+     - user2
+     - user3
+
+ - lineinfile: "dest=/etc/sudoers state=absent line='user1 ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'"
+ - lineinfile: "dest=/etc/sudoers state=absent line='user2 ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'"
+ - lineinfile: "dest=/etc/sudoers state=absent line='user3 ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'"
+ - lineinfile: "dest=/etc/hosts state=absent line='[IP Address]	[Website(s)]'"

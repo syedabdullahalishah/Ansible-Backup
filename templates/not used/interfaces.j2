@@ -1,0 +1,14 @@
+#
+# Shorewall version 4 - Interfaces File
+#
+# For information about entries in this file, type "man shorewall-interfaces"
+#
+# The manpage is also online at
+# http://www.shorewall.net/manpages/shorewall-interfaces.html
+#
+###############################################################################
+#ZONE   INTERFACE       BROADCAST       OPTIONS
+#ZONE   INTERFACE       BROADCAST       OPTIONS
+net     eth0            detect          dhcp,tcpflags,routefilter,nosmurfs,logmartians,blacklist
+#net    eth1            detect          dhcp,tcpflags,routefilter,nosmurfs,logmartians,blacklist
+#LAST LINE -- ADD YOUR ENTRIES BEFORE THIS ONE -- DO NOT REMOVE

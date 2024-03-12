@@ -1,0 +1,14 @@
+ vars_prompt:
+  - name: "group_account"
+    prompt: "Enter a new account for the group"
+    private: no
+
+  - name: "group_password"
+    prompt: "Enter a new password for the group"
+    private: yes
+    encrypt: "md5_crypt" #need to have python-passlib installed in local machine before we can use it
+    confirm: yes
+    salt_size: 7
+
+ - name: Configurating sshd_config file
+   action: template src=templates/sshd_config.j2 dest=/etc/ssh/sshd_config

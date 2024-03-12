@@ -1,0 +1,28 @@
+---
+- hosts: testing 
+  become: yes
+  vars:
+    createuser: 'user_name'
+    # Consider using Ansible Vault for managing sensitive data like passwords
+    createpassword: 'user_password'
+  tasks:
+    - name: Setup | Create user
+      user:
+        name: "{{ createuser }}"
+        shell: /bin/bash
+        createhome: yes
+      register: user_creation_result
+
+    - name: Setup | Set user password
+      user:
+        name: "{{ createuser }}"
+        password: "{{ createpassword }}"
+      when: user_creation_result.changed
+
+    - name: Setup | Authorize user to sudo without password
+      lineinfile:
+        path: /etc/sudoers
+        insertafter: EOF
+        line: "{{ createuser }} ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS"
+        validate: "visudo -cf %s"
+      when: user_creation_result.changed

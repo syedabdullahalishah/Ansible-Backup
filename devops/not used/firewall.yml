@@ -1,0 +1,18 @@
+---
+ - name: Installing Firewall Packages on Servers
+   action: apt pkg=shorewall state=installed
+
+ - name:  Copying Firewall Settings and Configurations
+   copy: src={{item.src}} dest={{item.dest}} owner=root group=root mode=0644
+   with_items:
+     - { src: 'templates/rules.j2', dest: '/etc/shorewall/rules' }
+     - { src: 'templates/blacklist.j2', dest: '/etc/shorewall/blacklist' }
+     - { src: 'templates/interfaces.j2', dest: '/etc/shorewall/interfaces' }
+     - { src: 'templates/policy.j2', dest: '/etc/shorewall/policy' }
+     - { src: 'templates/zones.j2', dest: '/etc/shorewall/zones' }
+     - { src: 'templates/shorewall.conf.j2', dest: '/etc/shorewall/shorewall.conf' }
+
+# - name: Activating Firewall
+#   command: shorewall restart
+
+

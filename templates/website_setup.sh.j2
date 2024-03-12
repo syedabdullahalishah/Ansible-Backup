@@ -1,0 +1,114 @@
+#!/bin/bash
+#
+#  By Syed Ejaz Ahmed Hashmi
+# #Main Variables Sections
+DASHES="================================================================================="
+DASHES2="---------------------------------------------------------------------------------"
+ScriptName="${0##*/}"
+#ScriptPath="`dirname \"$0\"`"
+#ScriptPath="`( cd \"$ScriptPath\" && pwd )`"
+ScriptPath="/home/arpatech/"
+default_web=/var/www/
+apache_a=/etc/apache2/sites-available/
+nginx_a=/etc/nginx/sites-available/
+nginx_e=/etc/nginx/sites-enabled/
+
+# Creating SSH related directeries
+
+mkdir -p /etc/ssh/includes/ >/dev/null 2>&1
+
+# Domain Name Section
+read -p "Please enter the Website Name without WWW: " dname
+
+# Creating default Web roots as per website name
+
+mkdir -p $default_web/$dname/web/
+cd $default_web/$dname/web/
+
+#WP downloading and configurations
+#wget
+
+#Apache Vhost
+cd $apache_a
+wget https://dl.dropboxusercontent.com/u/75125577/sync/apache-vhost-default.conf >/dev/null 2>&1
+sed -i "s/127.0.0.1/$dname/g" apache-vhost-default.conf
+
+mv apache-vhost-default.conf $dname.conf
+
+a2ensite $dname >/dev/null 2>&1
+
+#Nginx Vhost
+cd $nginx_a
+
+wget https://dl.dropboxusercontent.com/u/75125577/sync/nginx-vhost-default.txt >/dev/null 2>&1
+sed -i "s/127.0.0.1/$dname/g" nginx-vhost-default.txt
+
+mv nginx-vhost-default.txt $dname
+
+cd $nginx_e
+
+ln -s $nginx_a/$dname $dname
+
+#Generating SFTP and SSH Users
+genuser=$(< /dev/urandom tr -dc a-z | head -c${1:-10};echo;)
+genpass=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-15};echo;)
+
+#SFTP-SSH User Creation and Configuration
+pass=$(perl -e 'print crypt($ARGV[0], "genpass")' $genpass)
+useradd -p $pass $genuser --no-create-home --shell /bin/MySecureShell --home /var/www/$dname/ -g www-data
+
+#Enabling SFTP Configuration
+touch /etc/ssh/includes/$genuser
+echo "<User $genuser>
+Home                     /var/www/$dname
+Shell   /bin/bash
+</User>"  >> /etc/ssh/includes/$genuser
+
+echo "Include /etc/ssh/includes/$genuser #Include SFTP-$genuser" >> /etc/ssh/sftp_config
+chown -R $genuser.www-data /var/www/$dname && find /var/www/$dname -type d -exec chmod 775 {} \; && find /var/www/$dname -type f -exec chmod 664 {} \;
+
+#MySQL Database and User
+dbpw=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-15};echo;)
+db="create database $genuser;GRANT ALL PRIVILEGES ON $genuser.* TO $genuser@localhost IDENTIFIED BY '$dbpw';FLUSH PRIVILEGES;"
+mysql -e "$db"
+
+#Application Credentials information Section
+echo $genuser >> /var/www/$dname/sftp_ssh_user.txt
+echo $genpass >> /var/www/$dname/sftp_ssh_user.txt
+echo $genuser >> /var/www/$dname/mysql.txt
+echo $dbpw >> /var/www/$dname/mysql.txt
+
+sr_sftp=$(cat /var/www/$dname/sftp_ssh_user.txt)
+sr_mysql=$(cat /var/www/$dname/mysql.txt)
+
+echo "Greetings,
+
+This is to inform you that New Site Has been setup on $HOSTNAME.
+
+Following are the details.
+
+$DASHES2
+
+Site:$dname
+
+$DASHES
+$DASHES2
+SSH/SFTP Details
+$sr_sftp
+$DASHES2
+MySQL Details
+$sr_mysql
+
+Regards
+DTAP" | mail -s "New Website setup done on $HOSTNAME" dtap@arpatech.com
+
+
+#Message for Host Entery, User and database details.
+echo -e "\033[36;5;7mNew Site $dname has been setup\033[0m"
+echo "$DASHES2"
+echo -e "Note your SSH/SFTP and MySQL credentials from $default_web/$dname/"
+echo "$DASHES2"
+echo -e "\033[36;5;7mKindly Upload the Webcontant on $default_web/$dname/\033[0m"
+
+exit 0
+

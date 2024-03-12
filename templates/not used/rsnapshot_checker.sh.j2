@@ -1,0 +1,11 @@
+#!/bin/bash
+
+STATUS_DIR="/home/arpatech/status"
+BACKUP_DIR=/mnt/backups/rsnapshot
+
+if ! test `find $BACKUP_DIR/ -maxdepth 1 -name daily.0 -mmin -1500` # || [ $DU -le 5 ]
+then
+echo 1 > $STATUS_DIR/rsnapshotstatus
+else
+echo 0 > $STATUS_DIR/rsnapshotstatus
+fi

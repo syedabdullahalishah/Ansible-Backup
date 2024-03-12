@@ -1,0 +1,52 @@
+---
+- name: Creating Script Directory
+  hosts: all
+  tasks:
+    - name: Ensure script directory exists
+      file:
+        path: /root/scripts/
+        state: directory
+        owner: root
+        group: root
+        mode: '0744'
+
+- name: Enabling On/Off Site Backups to remote Host
+  hosts: all
+  tasks:
+    - name: Copy backup scripts
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: '0762'
+      with_items:
+        - { src: '/ddevops/ansible-playbooks/templates/mysqlbackup.sh.j2', dest: '/root/scripts/mysqlbackup.sh' }
+        - { src: '/ddevops/ansible-playbooks/templates/patch.sh.j2', dest: '/root/scripts/patch.sh' }
+        - { src: '/ddevops/ansible-playbooks/templates/rsnapshot.conf.j2', dest: '/etc/rsnapshot.conf' }
+        - { src: '/ddevops/ansible-playbooks/templates/website_setup.sh.j2', dest: '/root/scripts/website_setup.sh' }
+
+- name: Uploading Standard Cron
+  hosts: all
+  tasks:
+    - name: Upload crontab template
+      template:
+        src: /ddevops/ansible-playbooks/templates/crontab.j2
+        dest: /etc/crontab
+
+- name: Creating Backup Directory
+  hosts: all
+  tasks:
+    - name: Ensure backup directory exists
+      file:
+        path: /mnt/backups/
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+- name: Activating Cron
+  hosts: all
+  tasks:
+    - name: Activate crontab
+      command: crontab /etc/crontab

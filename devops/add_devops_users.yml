@@ -1,0 +1,33 @@
+- name: Copying Users Configuration and Bash to Remote Host
+  hosts: all
+  tasks:
+    - name: Copy SSH public keys for users
+      authorized_key:
+        user: "{{ item.user }}"
+        key: "{{ lookup('file', '/ddevops/ansible-playbooks/files/' + item.pub) }}"
+      loop:
+        - { user: 'user1', pub: 'user1.pub' }
+        #- { user: 'user2', pub: 'user2.pub' }
+        #- { user: 'user3', pub: 'user3.pub' }
+        - { user: 'root', pub: 'cpnael.pub' }
+
+- name: Adding users to sudoers
+  hosts: all
+  tasks:
+    - name: Add users to sudoers
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        line: "{{ item }}"
+      loop:
+        - 'user1 ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'
+        #- 'user2 ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'
+        #- 'user3 ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'
+
+- name: Restart SSH
+  hosts: all
+  tasks:
+    - name: Restart SSH service
+      service:
+        name: ssh
+        state: restarted

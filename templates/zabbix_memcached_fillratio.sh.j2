@@ -1,0 +1,21 @@
+#!/bin/bash
+
+check_ () {
+        if [ $1 -ne 0 ]; then
+        echo 0; exit 0
+        fi
+  }
+
+fillratio=0
+check_ `service memcached status 2>/dev/null | grep -q "is running"; echo $?`
+
+limit_maxbytes=$((echo stats; sleep 0.1) | telnet localhost 11211 2>&1 | grep limit_maxbytes | awk '{ print $3 }')
+bytes=$((echo stats; sleep 0.1) | telnet localhost 11211 2>&1 | grep -w bytes | grep -E -v 'read|written|limit' | awk '{ print $3 }')
+
+if [ $limit_maxbytes -ne 0 ]; then
+        fillratio=$(echo "scale=4;($bytes/$limit_maxbytes)*100" | bc)
+fi
+
+echo $fillratio
+
+

@@ -1,0 +1,36 @@
+# {{ ansible_managed }}
+#!/bin/bash
+
+Parameters=('system.rsnapshot.backup.status' 'system.mysql.backup.status')
+ZabbixFile='/etc/zabbix/arpatech_userparameter.conf'
+DIR=/home/arpatech/zabbix
+# Create required directories
+if [ ! -e "$DIR" ];  then
+        mkdir -p "$DIR"
+fi
+
+j=0
+
+        for (( j=0; j<${#Parameters[@]}; j++ )); do
+                Status=`grep ${Parameters[j]} $ZabbixFile | awk '{print $NF}'`
+                Parameter[$j]=`echo $Status | cut -d '/' -f2`
+
+                        if [[ ${Parameter[$j]} == "home" ]]; then
+                                if [ ! -f $Status ]; then
+                                echo 1 > $Status
+                                fi
+                        else
+                                if ! test $Status; then
+                                AddParam=`echo "${Parameters[j]}" | cut -d '.' -f2 `
+                                mkdir -p /home/arpatech/status
+                                echo 2 >"/home/arpatech/status/"$AddParam"status"
+                                fi
+                       fi
+        done
+
+GrepOld=$(cat /etc/zabbix/zabbix_agentd.conf |grep "system.mysql.backup.status\|system.duplicity.status\|system.rsnapshot.backup.status\|system.cloudways.cloud\|system.cloudways.region\|system.cloudways.creation\|system.monthlybandwidth\|system.varnishhitrate\|system.varnishnuked\|system.memcachedhitrate\|system.memcachedfillratio\|system.apchitrate\|system.apcfillratio\|system.mount.check")
+if [ $? != 1 ]; then
+echo $GrepOld
+fi
+
+

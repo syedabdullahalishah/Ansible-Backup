@@ -1,0 +1,64 @@
+---
+- name: MySQL Installation and Configuration
+  hosts: all
+  vars:
+    mysql_root_password: "your_password_here"
+
+  tasks:
+    - name: Install MySQL packages and required Python packages
+      block:
+        - name: Install MySQL packages
+          apt:
+            name:
+              - mysql-server
+              - mysql-client
+              - mysql-client-8.0
+              - mysql-client-core-8.0
+              - mysql-common
+              - mysql-server-8.0
+              - mysql-server-core-8.0
+              - libmysqlclient-dev
+              - python3-pip
+              - libssl-dev
+              - libffi-dev
+              - python3-dev
+              - python3-wheel
+              - pkg-config
+            state: present
+
+        - name: Install PyMySQL
+          pip:
+            name: pymysql
+            executable: pip3
+            state: present
+
+        - name: Install mysqlclient
+          pip:
+            name: mysqlclient
+            executable: pip3
+            state: present
+
+    - name: MySQL | Configuration file, my.cnf
+      template:
+        src: /ddevops/ansible-playbooks/templates/etc-mysql-my-cnf.j2
+        dest: /etc/mysql/my.cnf
+      notify: Restart MySQL
+
+    - name: MySQL | Set the root password
+      mysql_user:
+        name: root
+        password: "{{ mysql_root_password }}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        host: localhost
+
+    - name: MySQL | Config for easy access as root user
+      template:
+        src: /ddevops/ansible-playbooks/templates/root-my-cnf.j2
+        dest: /root/.my.cnf
+      notify: Restart MySQL
+
+  handlers:
+    - name: Restart MySQL
+      service:
+        name: mysql
+        state: restarted

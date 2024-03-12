@@ -1,0 +1,8 @@
+---
+ - file: path=/root/scripts state=absent recurse=no
+ - file: path=/home/arpatech state=absent recurse=no
+ - file: path=/etc/zabbix state=absent recurse=no
+ - file: path=/root/j.facts state=absent recurse=no
+ - file: path=/root/mysql_user.txt state=absent recurse=no
+ - file: path=/root/ssh_user.txt state=absent recurse=no
+ - file: path=/root/sftp_user.txt state=absent recurse=no

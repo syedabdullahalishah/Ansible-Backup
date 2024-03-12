@@ -1,0 +1,65 @@
+---
+ - name: Uninstall Packages from the Servers
+   action: apt pkg={{item}} state=absent purge=yes
+   with_items:
+    - zabbix-agent
+    - monit
+    - zip
+    - iftop
+    - tar
+    - software-properties-common
+    - htop
+    - lolcat
+    - bzip2
+    - vnstat
+    - rsnapshot
+    - git
+    - whois
+    - mysecureshell
+    - mailutils
+    - snapd
+    - lynx
+    - lz4
+    - mawk
+    - figlet
+    - memcached
+    - mime-support
+    - mount
+    - multipath-tools
+    - mytop
+    - net-tools
+    - nmap
+    - nodejs
+    - npm
+    - curl
+ - name: Removing DevOps Custom Bash Profile
+   template: src=templates/default_bashrc.j2 dest=/root/.bashrc
+
+# - name: Stopping Web Services
+#   action: service name={{item}} state=stopped
+#   with_items:
+#    - nginx
+#    - varnish
+
+ - name: Reverting the server to Apache2
+   copy: src=templates/default_ports.conf.j2 dest=/etc/apache2/ports.conf
+
+ - name: Activating Web Services
+   action: service name={{item}} state=restarted
+   with_items:
+    - apache2
+
+ - name: Uninstall Packages from the Servers
+   action: apt pkg={{item}} state=absent purge=yes
+   with_items:
+    - nginx
+    - varnish 
+    - redis
+
+ - name: Removing Nginx and Varnish
+   file: path=/etc{{ item }} state=absent recurse=no
+   with_items:
+    - "nginx"
+    - "varnish"
+    - "redis"
+

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+check_ () {
+        if [ $1 -ne 0 ]; then
+        echo 0; exit 0
+        fi
+  }
+
+check_ `service varnish status 2>/dev/null | grep -q "is running"; echo $?`
+
+cache_hit=$(varnishstat -1 -f cache_hit | awk '{ print $2 }')
+client_req=$(varnishstat -1 -f client_req | awk '{ print $2 }')
+
+hitrate=$(echo "scale=4;($cache_hit/$client_req)*100" | bc)
+
+echo $hitrate
+
+

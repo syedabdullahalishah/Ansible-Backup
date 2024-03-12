@@ -1,0 +1,4 @@
+#!/bin/bash
+
+varnishstat -1 -f n_lru_nuked | awk '{ print $2 }'
+

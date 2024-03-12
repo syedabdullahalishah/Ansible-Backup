@@ -1,0 +1,32 @@
+---
+- hosts: all 
+  user: root
+  vars:
+    createuser: 'rehan'
+    createpassword: '@i123myamazingpassword'
+  tasks:
+  - name: Setup | create user
+    command: useradd -m {{ createuser }} -s /bin/bash  creates=/home/{{ createuser }}
+    sudo: true
+
+  - name: Setup | set user password
+    shell: usermod -p $(echo '{{ createpassword }}' | openssl passwd -1 -stdin) {{ createuser }}
+    sudo: true
+
+  - name: Setup | authorized key upload
+    authorized_key: user={{ createuser }}
+      key="{{ lookup('file', 'keys/rehan.pub') }}"
+      path='/home/{{ createuser }}/.ssh/authorized_keys'
+      manage_dir=no
+    sudo: true
+
+  - name: Sudoers | update sudoers file and validate
+    lineinfile: "dest=/etc/sudoers
+      insertafter=EOF
+      line='{{ createuser }} ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'
+      regexp='{{ createuser }} ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'
+      state=present"
+    sudo: true
+
+  - name: Updating Bash Profile
+    template: src=templates/devops_bashrc.j2 dest=/home/{{ createuser }}/.bashrc

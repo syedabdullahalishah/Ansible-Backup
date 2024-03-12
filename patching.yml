@@ -1,0 +1,8 @@
+- name: Patching packages on servers
+  hosts: testing
+  user: root
+  tasks:
+    - name: Update package lists and Upgrade installed packages
+      apt:
+        update_cache: yes
+        upgrade: yes

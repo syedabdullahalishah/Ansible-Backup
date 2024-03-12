@@ -1,0 +1,89 @@
+---
+- name: Install Postfix and s-nail
+  hosts: all
+  tasks:
+    - name: Install Postfix
+      apt:
+        name: postfix
+        state: present
+
+    - name: Set home_mailbox to Maildir
+      command: postconf -e 'home_mailbox= Maildir/'
+      args:
+        creates: /etc/postfix/.home_mailbox_set
+
+    - name: Configure virtual_alias_maps
+      command: postconf -e 'virtual_alias_maps= hash:/etc/postfix/virtual'
+      args:
+        creates: /etc/postfix/.virtual_alias_maps_set
+
+    - name: Create /etc/postfix/virtual file if it doesn't exist
+      file:
+        path: /etc/postfix/virtual
+        state: touch
+
+    - name: Add virtual aliases
+      lineinfile:
+        path: /etc/postfix/virtual
+        line: "{{ item }}"
+        state: present
+      with_items:
+        - "contact@example.com demo_user"
+        - "admin@example.com demo_user"
+      notify: Update virtual aliases database
+
+    - name: Ensure inet_interfaces is configured
+      lineinfile:
+        dest: /etc/postfix/main.cf
+        state: present
+        line: "{{ item }}"
+      loop:
+        - "inet_interfaces = loopback-only"
+        - "mynetworks_style = host"
+        - "inet_protocols = ipv4"
+
+    - name: Restart Postfix
+      service:
+        name: postfix
+        state: restarted
+      notify: reload bashrc
+
+    - name: Allow Postfix in UFW
+      ufw:
+        rule: allow
+        port: 25
+
+    - name: Set MAIL environment variable in bash.bashrc
+      lineinfile:
+        dest: /etc/bash.bashrc
+        line: "export MAIL=~/Maildir"
+      notify: reload bashrc
+
+    - name: Install s-nail
+      apt:
+        name: s-nail
+        state: present
+
+    - name: Configure s-nail
+      lineinfile:
+        path: /etc/s-nail.rc
+        line: "{{ item }}"
+        state: present
+      with_items:
+        - "set emptystart"
+        - "set folder=Maildir"
+        - "set record=+sent"
+
+    - name: Send initial email
+      shell: "echo 'init' | s-nail -s 'init' -Snorecord demo_user"
+      args:
+        creates: /root/.s-nail-recorded
+
+  handlers:
+    - name: reload bashrc
+      shell: "bash -l -c 'source /etc/bash.bashrc'"
+    
+    - name: Update virtual aliases database
+      command: postmap /etc/postfix/virtual
+      args:
+        creates: /etc/postfix/.virtual_alias_map_updated

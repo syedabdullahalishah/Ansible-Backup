@@ -1,0 +1,7 @@
+---
+- hosts: testing 
+  user: root
+  tasks:
+  - include: devops/uninstallpkg.yml
+  - include: devops/remove_backup.yml
+  - include: devops/remove_user.yml

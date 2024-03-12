@@ -1,0 +1,20 @@
+#!/bin/bash
+
+check_ () {
+        if [ $1 -ne 0 ]; then
+        echo 0; exit 0
+        fi
+  }
+
+hitrate=0
+check_ `service memcached status 2>/dev/null | grep -q "is running"; echo $?`
+
+
+get_hits=$((echo stats; sleep 0.1) | telnet localhost 11211 2>&1 | grep get_hits | awk '{ print $3 }')
+get_misses=$((echo stats; sleep 0.1) | telnet localhost 11211 2>&1 | grep get_misses | awk '{ print $3 }')
+
+if [ $get_hits -ne 0 ] && [ $get_misses -ne 0 ]; then
+        hitrate=$(echo "scale=2;($get_hits/($get_hits+$get_misses))*100" | bc)
+fi
+echo $hitrate
+

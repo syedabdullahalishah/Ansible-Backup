@@ -1,0 +1,33 @@
+#!/bin/bash
+# Script by Syed Ejaz jazi2006@gmail.com
+date=`date +%Y%m%d`
+fdate=`date +%Y%m%d-%H%M`
+DBS="$(mysql -Bse 'show databases')"
+DIR=/mnt/backups/mysql
+RETENTION="+15"
+
+# Create required directories
+if [ ! -e "$DIR" ]                # Check Backup Directory exists.
+        then
+        mkdir -p "$DIR"
+fi
+
+#List User Databases
+for db in $DBS
+do
+ if [ $db != "information_schema" ] && [ $db != "performance_schema" ]
+ then
+ echo "=============================`date`====================================="
+ echo "Taking Backup of Database : $db"
+        if [ $db == "mysql" ]
+        then
+        nice -n 19 mysqldump --quick --routines --events $db --result-file=$DIR/$db-$fdate.sql
+        else
+        nice -n 19 mysqldump --quick --routines $db --result-file=$DIR/$db-$fdate.sql
+        fi
+ fi
+done
+ echo "======================================================================="
+ echo "Removing Older Backups"
+find $DIR/ -name "*.sql" -mtime $RETENTION -exec rm {} \;
+
