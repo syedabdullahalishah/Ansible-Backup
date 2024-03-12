@@ -22,5 +22,8 @@ echo ""
 #echo "\\\CONFIGURING MYSQL//"
 #ansible-playbook -i /ddevops/ansible-playbooks/hosts  /ddevops/ansible-playbooks/devops/mysql.yml
 
-echo "\\\INSTALLING WEB SERVICES//"
-ansible-playbook -i /ddevops/ansible-playbooks/hosts  /ddevops/ansible-playbooks/devops/web.yml
+#echo "\\\INSTALLING WEB SERVICES//"
+#ansible-playbook -i /ddevops/ansible-playbooks/hosts  /ddevops/ansible-playbooks/devops/web.yml
+
+echo "\\\INSTALLING ZABBIX AGENT//"
+ansible-playbook -i /ddevops/ansible-playbooks/hosts  /ddevops/ansible-playbooks/devops/zabbix.yml

@@ -1,34 +1,57 @@
 ---
-  - name: Installing Zabbix Agent
-    apt:
+- name: Zabbix Setup
+  hosts: all
+  become: true  # This ensures that tasks are executed with sudo privileges
+
+  tasks:
+    - name: Installing Zabbix Agent
+      apt:
         name: zabbix-agent
         state: present
         update_cache: yes
 
-  - name: Creating Zabbix Directory
-    file: path=/home/ddevops/zabbix/ state=directory owner=root group=root mode=0755
+    - name: Creating Zabbix Directory
+      file:
+        path: "/home/ddevops/zabbix"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
 
-  - name:  Copying Zabbix Configurations to Remote Host
-    copy: src={{item.src}} dest={{item.dest}} owner=root group=root mode=0644
-    with_items:
-      - { src: 'templates/arpatech_userparameter.conf.j2', dest: '/etc/zabbix/ddevops_userparameter.conf' }
-      - { src: 'templates/zabbix_agentd.conf.j2', dest: '/etc/zabbix/zabbix_agentd.conf' }
-      - { src: 'templates/apc-stats.php.j2', dest: '/home/ddevops/zabbix/apc-stats.php' }
-      
-  - name:  Copying Zabbix Scripts to Remote Host
-    copy: src={{item.src}} dest={{item.dest}} owner=root group=root mode=0762
-    with_items:
-      - { src: 'templates/zabbix_varnish_nuked.sh.j2', dest: '/home/ddevops/zabbix/zabbix_varnish_nuked.sh' }
-      - { src: 'templates/zabbix_varnish_hitrate.sh.j2', dest: '/home/ddevops/zabbix/zabbix_varnish_hitrate.sh' }
-      - { src: 'templates/zabbix_total_month_bandwidth.sh.j2', dest: '/home/ddevops/zabbix/zabbix_total_month_bandwidth.sh' }
-      - { src: 'templates/zabbix_memcached_hitrate.sh.j2', dest: '/home/ddevops/zabbix/zabbix_memcached_hitrate.sh' }
-      - { src: 'templates/zabbix_memcached_fillratio.sh.j2', dest: '/home/ddevops/zabbix/zabbix_memcached_fillratio.sh' }
-      - { src: 'templates/zabbix_backupfiles_check.sh.j2', dest: '/home/ddevops/zabbix/zabbix_backupfiles_check.sh' }
-      - { src: 'templates/zabbix_apc_hitrate.sh.j2', dest: '/home/ddevops/zabbix/zabbix_apc_hitrate.sh' }
-      - { src: 'templates/zabbix_apc_fillratio.sh.j2', dest: '/home/ddevops/zabbix/zabbix_apc_fillratio.sh' }
-      - { src: 'templates/analog.sh.j2', dest: '/home/ddevops/zabbix/analog.sh' }
+    - name: Copying Zabbix Configurations to Remote Host
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: "0644"
+      with_items:
+        - { src: '/ddevops/ansible-playbooks/templates/arpatech_userparameter.conf.j2', dest: '/etc/zabbix/ddevops_userparameter.conf' }
+        - { src: '/ddevops/ansible-playbooks/templates/zabbix_agentd.conf.j2', dest: '/etc/zabbix/zabbix_agentd.conf' }
+        - { src: '/ddevops/ansible-playbooks/templates/apc-stats.php.j2', dest: '/home/ddevops/zabbix/apc-stats.php' }
 
-  - name: Adding Zabbix Server in Host file
-    lineinfile: dest=/etc/hosts state=present line='{{item}}'
-    with_items:
-      - '[IP Address]      [Website Hostname]'
+    - name: Copying Zabbix Scripts to Remote Host
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: "0762"
+      with_items:
+        - { src: '/ddevops/ansible-playbooks/templates/zabbix_varnish_nuked.sh.j2', dest: '/home/ddevops/zabbix/zabbix_varnish_nuked.sh' }
+        - { src: '/ddevops/ansible-playbooks/templates/zabbix_varnish_hitrate.sh.j2', dest: '/home/ddevops/zabbix/zabbix_varnish_hitrate.sh' }
+        - { src: '/ddevops/ansible-playbooks/templates/zabbix_total_month_bandwidth.sh.j2', dest: '/home/ddevops/zabbix/zabbix_total_month_bandwidth.sh' }
+        - { src: '/ddevops/ansible-playbooks/templates/zabbix_memcached_hitrate.sh.j2', dest: '/home/ddevops/zabbix/zabbix_memcached_hitrate.sh' }
+        - { src: '/ddevops/ansible-playbooks/templates/zabbix_memcached_fillratio.sh.j2', dest: '/home/ddevops/zabbix/zabbix_memcached_fillratio.sh' }
+        - { src: '/ddevops/ansible-playbooks/templates/zabbix_backupfiles_check.sh.j2', dest: '/home/ddevops/zabbix/zabbix_backupfiles_check.sh' }
+        - { src: '/ddevops/ansible-playbooks/templates/zabbix_apc_hitrate.sh.j2', dest: '/home/ddevops/zabbix/zabbix_apc_hitrate.sh' }
+        - { src: '/ddevops/ansible-playbooks/templates/zabbix_apc_fillratio.sh.j2', dest: '/home/ddevops/zabbix/zabbix_apc_fillratio.sh' }
+        - { src: '/ddevops/ansible-playbooks/templates/analog.sh.j2', dest: '/home/ddevops/zabbix/analog.sh' }
+
+    - name: Adding Zabbix Server in Host file
+      lineinfile:
+        dest: "/etc/hosts"
+        state: present
+        line: "{{ item }}"
+      with_items:
+        - "[IP Address] [Website Hostname]"
