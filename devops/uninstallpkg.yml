@@ -1,73 +1,52 @@
 - hosts: all
-  user: root
+  become: yes
   tasks:
-    - name: Uninstall Packages from the Servers
+    - name: Update package lists
       apt:
-        name: "{{ item }}"
+        update_cache: yes
+
+    - name: Ensure python3-apt package is installed
+      package:
+        name: python3-apt
+        state: present
+
+    - name: Purge Python 3 if present
+      apt:
+        name: python3
         state: absent
         purge: yes
-      loop:
-        - zabbix-agent
-        - monit
-        - zip
-        - iftop
-        - tar
-        - software-properties-common
-        - htop
-        - lolcat
-        - bzip2
-        - vnstat
-        - rsnapshot
-        - git
-        - whois
-        - mysecureshell
-        - mailutils
-        - snapd
-        - lynx
-        - lz4
-        - mawk
-        - figlet
-        - memcached
-        - mime-support
-        - mount
-        - multipath-tools
-        - mytop
-        - net-tools
-        - nmap
-        - nodejs
-        - npm
-        - curl
 
-    - name: Removing DevOps Custom Bash Profile
-      file:
-        path: /root/.bashrc
-        state: absent
-
-    - name: Reverting the server to Apache2
-      template:
-        src: templates/default_ports.conf.j2
-        dest: /etc/apache2/ports.conf
-
-    - name: Activating Web Services
-      service:
-        name: apache2
-        state: restarted
-
-    - name: Uninstall Web Services Packages
+    - name: Install Python 3
       apt:
-        name: "{{ item }}"
-        state: absent
-        purge: yes
-      loop:
-        - nginx
-        - varnish 
-        - redis
+        name: python3
+        state: present
 
-    - name: Removing Nginx and Varnish Configuration Files
-      file:
-        path: /etc/{{ item }}
-        state: absent
-      loop:
-        - nginx
-        - varnish
-        - redis
+  vars:
+    packages_to_uninstall:
+      - zabbix-agent
+      - monit
+      - iftop
+      - zip
+      - software-properties-common
+      - htop
+      - lolcat
+      - bzip2
+      - vnstat
+      - rsnapshot
+      - git
+      - mysecureshell
+      - snapd
+      - lynx
+      - lz4
+      - mawk
+      - figlet
+      - memcached
+      - mime-support
+      - mount
+      - multipath-tools
+      - mytop
+      - net-tools
+      - nmap
+      - nodejs
+      - npm
+      - curl
