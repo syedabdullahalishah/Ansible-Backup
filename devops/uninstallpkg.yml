@@ -1,65 +1,73 @@
----
- - name: Uninstall Packages from the Servers
-   action: apt pkg={{item}} state=absent purge=yes
-   with_items:
-    - zabbix-agent
-    - monit
-    - zip
-    - iftop
-    - tar
-    - software-properties-common
-    - htop
-    - lolcat
-    - bzip2
-    - vnstat
-    - rsnapshot
-    - git
-    - whois
-    - mysecureshell
-    - mailutils
-    - snapd
-    - lynx
-    - lz4
-    - mawk
-    - figlet
-    - memcached
-    - mime-support
-    - mount
-    - multipath-tools
-    - mytop
-    - net-tools
-    - nmap
-    - nodejs
-    - npm
-    - curl
- - name: Removing DevOps Custom Bash Profile
-   template: src=templates/default_bashrc.j2 dest=/root/.bashrc
+- hosts: all
+  user: root
+  tasks:
+    - name: Uninstall Packages from the Servers
+      apt:
+        name: "{{ item }}"
+        state: absent
+        purge: yes
+      loop:
+        - zabbix-agent
+        - monit
+        - zip
+        - iftop
+        - tar
+        - software-properties-common
+        - htop
+        - lolcat
+        - bzip2
+        - vnstat
+        - rsnapshot
+        - git
+        - whois
+        - mysecureshell
+        - mailutils
+        - snapd
+        - lynx
+        - lz4
+        - mawk
+        - figlet
+        - memcached
+        - mime-support
+        - mount
+        - multipath-tools
+        - mytop
+        - net-tools
+        - nmap
+        - nodejs
+        - npm
+        - curl
 
-# - name: Stopping Web Services
-#   action: service name={{item}} state=stopped
-#   with_items:
-#    - nginx
-#    - varnish
+    - name: Removing DevOps Custom Bash Profile
+      file:
+        path: /root/.bashrc
+        state: absent
 
- - name: Reverting the server to Apache2
-   copy: src=templates/default_ports.conf.j2 dest=/etc/apache2/ports.conf
+    - name: Reverting the server to Apache2
+      template:
+        src: templates/default_ports.conf.j2
+        dest: /etc/apache2/ports.conf
 
- - name: Activating Web Services
-   action: service name={{item}} state=restarted
-   with_items:
-    - apache2
+    - name: Activating Web Services
+      service:
+        name: apache2
+        state: restarted
 
- - name: Uninstall Packages from the Servers
-   action: apt pkg={{item}} state=absent purge=yes
-   with_items:
-    - nginx
-    - varnish 
-    - redis
+    - name: Uninstall Web Services Packages
+      apt:
+        name: "{{ item }}"
+        state: absent
+        purge: yes
+      loop:
+        - nginx
+        - varnish 
+        - redis
 
- - name: Removing Nginx and Varnish
-   file: path=/etc{{ item }} state=absent recurse=no
-   with_items:
-    - "nginx"
-    - "varnish"
-    - "redis"
-
+    - name: Removing Nginx and Varnish Configuration Files
+      file:
+        path: /etc/{{ item }}
+        state: absent
+      loop:
+        - nginx
+        - varnish
+        - redis

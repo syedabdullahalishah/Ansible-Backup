@@ -1,8 +1,44 @@
----
- - file: path=/root/scripts state=absent recurse=no
- - file: path=/home/arpatech state=absent recurse=no
- - file: path=/etc/zabbix state=absent recurse=no
- - file: path=/root/j.facts state=absent recurse=no
- - file: path=/root/mysql_user.txt state=absent recurse=no
- - file: path=/root/ssh_user.txt state=absent recurse=no
- - file: path=/root/sftp_user.txt state=absent recurse=no
+- hosts: all
+  user: root
+  tasks:
+    - name: Remove scripts directory from root
+      file:
+        path: /root/scripts
+        state: absent
+        recurse: no
+
+    - name: Remove arpatech user's home directory
+      file:
+        path: /home/arpatech
+        state: absent
+        recurse: no
+
+    - name: Remove Zabbix directory
+      file:
+        path: /etc/zabbix
+        state: absent
+        recurse: no
+
+    - name: Remove j.facts file from root
+      file:
+        path: /root/j.facts
+        state: absent
+        recurse: no
+
+    - name: Remove mysql_user.txt file from root
+      file:
+        path: /root/mysql_user.txt
+        state: absent
+        recurse: no
+
+    - name: Remove ssh_user.txt file from root
+      file:
+        path: /root/ssh_user.txt
+        state: absent
+        recurse: no
+
+    - name: Remove sftp_user.txt file from root
+      file:
+        path: /root/sftp_user.txt
+        state: absent
+        recurse: no
