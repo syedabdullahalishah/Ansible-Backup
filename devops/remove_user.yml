@@ -1,12 +1,27 @@
----
- - name: Deleting DevOps users
-   user: name={{ item }} state=absent remove=yes
-   with_items:
-     - user1
-     - user2
-     - user3
+- hosts: testing
+  become: true
+  tasks:
+    - name: Deleting DevOps users
+      user:
+        name: "{{ item }}"
+        state: absent
+        remove: yes
+      loop:
+        - test
+        #- rahim
 
- - lineinfile: "dest=/etc/sudoers state=absent line='user1 ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'"
- - lineinfile: "dest=/etc/sudoers state=absent line='user2 ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'"
- - lineinfile: "dest=/etc/sudoers state=absent line='user3 ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS'"
- - lineinfile: "dest=/etc/hosts state=absent line='[IP Address]	[Website(s)]'"
+    - name: Remove sudo permissions for removed users
+      lineinfile:
+        dest: /etc/sudoers
+        state: absent
+        line: "{{ item }} ALL=(ALL) NOPASSWD:ALL,!RESTRICT,!RESTRICT_ACCESS"
+      loop:
+        - test
+        #- rahim
+        
+
+    - name: Remove obsolete host entry
+      lineinfile:
+        dest: /etc/hosts
+        state: absent
+        line: "188.166.212.142      zabbix-do-web1.arpatech.com     zabbix-do-web1"
